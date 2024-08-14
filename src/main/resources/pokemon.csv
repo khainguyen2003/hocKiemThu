@@ -1,4 +1,4 @@
 name1,type,statusCode
-poka,legen,200
+poka,legen,201
 poka,abcd,400
-abcd,legen,200
+abcd,legen,201

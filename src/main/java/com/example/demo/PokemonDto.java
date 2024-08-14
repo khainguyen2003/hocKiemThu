@@ -13,4 +13,9 @@ public class PokemonDto {
     private int id;
     private String name;
     private String type;
+
+    public PokemonDto(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
 }

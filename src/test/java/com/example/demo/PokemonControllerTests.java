@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,7 +117,15 @@ public class PokemonControllerTests {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/pokemon.csv", numLinesToSkip = 1)
-    public void PokemonController_CreatePokemon_WithCsv(String name, String type, String code) {
-        System.out.println(name + "-" + type + "-" + code);
+    public void PokemonController_CreatePokemon_WithCsv(String name, String type, int code) throws Exception {
+        PokemonDto createReq = new PokemonDto(name, type);
+        given(pokemonService.createPokemon(ArgumentMatchers.any(PokemonDto.class))).willAnswer((invocation -> invocation.getArgument(0)));
+        ResultActions response = mockMvc.perform(post("/api/pokemon/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createReq)));
+
+        response.andExpect(MockMvcResultMatchers.status().is(code))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.is(name)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type", CoreMatchers.is(type)));
     }
 }
